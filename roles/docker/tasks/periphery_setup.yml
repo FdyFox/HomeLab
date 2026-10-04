@@ -58,6 +58,7 @@
   ansible.builtin.shell: |
     systemctl --user daemon-reload
     systemctl --user enable --now periphery
+    systemctl --user restart --now periphery
   changed_when: false
 
 - name: Save current version to file

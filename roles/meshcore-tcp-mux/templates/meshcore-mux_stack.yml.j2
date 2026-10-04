@@ -1,0 +1,16 @@
+services:
+  meshcore-mux:
+    image: ghcr.io/fdyfox/meshcore-mux:latest
+    restart: unless-stopped
+    command: ["--config", "/etc/meshcore-mux/config.yaml"]
+    user: 1000:1000
+    volumes:
+      - '{{ docker_container_config_folder }}/meshcore-mux/config.yaml:/etc/meshcore-mux/config.yaml:ro'
+      - '{{ docker_container_data_folder }}/meshcore-mux/data:/var/lib/meshcore-mux:rw'
+    ports:
+      - "0.0.0.0:5001-5005:5001-5005/tcp" # Change "127.0.0.1" to "0.0.0.0" if you want to connect to meshcore-mux from other devices.
+    environment:
+      LOG_LEVEL: "INFO" # Change to "DEBUG" for more verbose logging
+    read_only: true
+    cap_drop: ["ALL"]
+    security_opt: ["no-new-privileges:true"]

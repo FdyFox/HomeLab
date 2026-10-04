@@ -45,6 +45,7 @@
       ansible.builtin.include_tasks: periphery_setup.yml
       when: (not release_file.stat.exists) or (latest_release not in current_release['content'] | b64decode)
       tags: docker.komodo
+  tags: docker.komodo
 
 # - name: Configure Monitoring
 #   ansible.builtin.include_tasks: tasks/alloy.yml

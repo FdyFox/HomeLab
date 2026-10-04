@@ -28,25 +28,25 @@ proxy:
     protected_private: true
     protected_internal: false
 
-  - name: actualbudget
-    hostname: 'actual.berger-em.net'
-    proxy_host: 'http://{{ host_ip }}:5006'
+#  - name: actualbudget
+#    hostname: 'actual.berger-em.net'
+#    proxy_host: 'http://{{ host_ip }}:5006'
 
   - name: audiobookshelf
     hostname: 'audiobookshelf.berger-em.net'
     proxy_host: 'http://{{ host_ip }}:8080'
 
-  - name: changedetection
-    hostname: 'changedetection.berger-em.net'
-    proxy_host: 'http://{{ host_ip }}:5001'
+#  - name: changedetection
+#    hostname: 'changedetection.berger-em.net'
+#    proxy_host: 'http://{{ host_ip }}:5001'
 
-  - name: firefly
-    hostname: 'firefly.berger-em.net'
-    proxy_host: 'http://{{ host_ip }}:8090'
+#  - name: firefly
+#    hostname: 'firefly.berger-em.net'
+#    proxy_host: 'http://{{ host_ip }}:8090'
 
-  - name: firefly-toolbox
-    hostname: 'ftools.berger-em.net'
-    proxy_host: 'http://{{ host_ip }}:3000'
+#  - name: firefly-toolbox
+#    hostname: 'ftools.berger-em.net'
+#    proxy_host: 'http://{{ host_ip }}:3000'
 
   - name: minimailer
     hostname: 'minimailer.berger-em.net'
@@ -59,26 +59,27 @@ proxy:
     protected_private: true
     protected_internal: false
 
-  - name: teddycloud
-    hostname: 'teddycloud.berger-em.net'
-    proxy_host: 'https://{{ host_ip }}:443'
-    protected_enabled: false
+#  - name: teddycloud
+#    hostname: 'teddycloud.berger-em.net'
+#    proxy_host: 'https://{{ host_ip }}:443'
+#    protected_enabled: false
 
-  - name: twitch-points
-    hostname: 'twitch-points.berger-em.net'
-    proxy_host: 'http://{{ host_ip }}:5002'
-    protected_private: true
-    protected_internal: false
+#  - name: twitch-points
+#    hostname: 'twitch-points.berger-em.net'
+#    proxy_host: 'http://{{ host_ip }}:5002'
+#    protected_private: true
+#    protected_internal: false
 
 # Services deployed on this host
 docker_roles:
-  - name: actualbudget
-  - name: adguardhome_sync
+#  - name: actualbudget
+#  - name: adguardhome_sync
   - name: audiobookshelf
-  - name: changedetection
+#  - name: changedetection
   - name: ddns
-  - name: firefly
+#  - name: firefly
   - name: portainer
-  - name: teddycloud
-  - name: twitch_points
+#  - name: teddycloud
+#  - name: twitch_points
   - name: onepassword
+  - name: meshcore-tcp-mux
