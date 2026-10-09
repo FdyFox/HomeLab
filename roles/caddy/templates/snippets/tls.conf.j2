@@ -1,7 +1,23 @@
 {{ ansible_managed | comment(decoration="# ") }}
-tls {
-  {% if caddy_tls_dns_cloudflare_enabled -%}
-  dns cloudflare {env.CLOUDFLARE_API_TOKEN}
-  resolvers 1.1.1.1
-  {% endif -%}
+(tls_cloudflare) {
+  tls {
+    {% if caddy_tls_dns_cloudflare_enabled -%}
+    dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+    resolvers 1.1.1.1
+    {% endif -%}
+  }
+}
+
+(tls_allinkl) {
+  tls {
+    {% if caddy_tls_dns_allinkl_enabled -%}
+    dns allinkl {
+      kas_username {env.KAS_USERNAME}
+      kas_password {env.KAS_PASSWORD}
+    }
+    resolvers 1.1.1.1
+    # KAS publishes DNS changes with a delay of a few minutes
+    propagation_timeout 10m
+    {% endif -%}
+  }
 }

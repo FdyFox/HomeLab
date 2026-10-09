@@ -26,22 +26,27 @@
     - name: Install golang if missing
       ansible.builtin.include_tasks: golang.yml
 
-    - name: Download xcaddy repo setup script
-      ansible.builtin.get_url:
-        url: https://dl.cloudsmith.io/public/caddy/xcaddy/setup.deb.sh
-        dest: /tmp/xcaddy.sh
-        mode: '0755'
+    # The cloudsmith apt repo is no longer usable (402 Payment Required)
+    - name: Remove old xcaddy apt repository
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /etc/apt/sources.list.d/caddy-xcaddy.list
+        - /usr/share/keyrings/caddy-xcaddy-archive-keyring.gpg
 
-    - name: Add xcaddy repository
-      ansible.builtin.command:
-        cmd: "/bin/bash /tmp/xcaddy.sh"
-        creates: /etc/apt/sources.list.d/caddy-xcaddy.list
-
-    - name: Install xCaddy
+    - name: Remove old xcaddy package
       ansible.builtin.apt:
         name: xcaddy
-        state: present
-        update_cache: true
+        state: absent
+
+    - name: Install xCaddy
+      ansible.builtin.shell:
+        executable: /bin/bash
+        cmd: |
+          export PATH=$PATH:/usr/local/go/bin
+          GOBIN=/usr/local/bin go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest
+        creates: /usr/local/bin/xcaddy
 
     - name: Check for existing version
       ansible.builtin.stat:
@@ -69,7 +74,7 @@
         executable: /bin/bash
         cmd: |
           export PATH=$PATH:/usr/local/go/bin
-          xcaddy build --with github.com/caddy-dns/cloudflare --with github.com/mholt/caddy-l4 --output {{ caddy_bin_path }}
+          xcaddy build --with github.com/mholt/caddy-l4 --with github.com/caddy-dns/cloudflare --with github.com/caddy-dns/all-inkl --output {{ caddy_bin_path }}
         creates: '{{ caddy_bin_path }}'
 
     - name: Make caddy executable

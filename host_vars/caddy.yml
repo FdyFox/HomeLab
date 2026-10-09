@@ -31,18 +31,6 @@ proxy:
     hostname: 'hardbase.berger-em.net'
     proxy_host: https://192.168.1.12:5001
 
-  - name: hass
-    hostname: 'hass.berger-em.net'
-    proxy_host: http://192.168.20.10:8123
-
-  - name: k1
-    hostname: 'k1.berger-em.net'
-    proxy_host: http://192.168.20.56:4408
-
-  - name: k1_cam
-    hostname: 'k1cam.berger-em.net'
-    proxy_host: http://192.168.20.56:8080
-
   - name: mqtt
     hostname: 'mqtt.berger-em.net'
     proxy_host: http://192.168.20.10:1883
@@ -58,18 +46,12 @@ proxy:
     protected_private: true
     protected_internal: false
 
-  - name: solar
-    hostname: 'solar.berger-em.net'
-    proxy_host: http://192.168.20.29
-
   - name: udm
     hostname: 'udm.berger-em.net'
     proxy_host: https://192.168.1.1:443
     protected_private: true
     protected_internal: false
 
-  - name: orca
-    hostname: 'orca.berger-em.net'
-    proxy_host: 'http://192.168.10.5:3000'
-    protect_private: true
-    protect_internal: false
+  - name: hass
+    hostname: 'hass.berger.saarland'
+    proxy_host: http://192.168.20.10:8123

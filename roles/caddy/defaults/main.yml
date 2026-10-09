@@ -11,6 +11,8 @@ caddy_metrics_enabled: true
 
 # TLS
 caddy_tls_dns_cloudflare_enabled: true
+# berger.saarland via all-inkl DNS challenge (needs KAS credentials in 1Password)
+caddy_tls_dns_allinkl_enabled: true
 
 # Remove unmanged confis
 caddy_rm_unmanaged_vhosts: true

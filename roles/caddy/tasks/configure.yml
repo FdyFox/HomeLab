@@ -50,10 +50,18 @@
         owner: '{{ caddy_user_name }}'
         group: '{{ caddy_group_name }}'
         mode: '0640'
+      # EnvironmentFile is only read on start, a reload keeps the old env
+      notify: Restart caddy
       vars:
-        secrets:
+        secrets_cloudflare:
           - key: CLOUDFLARE_API_TOKEN
             value: '{{ lookup("community.general.onepassword", "Caddy Cloudflare Token", vault="HomeLab") }}'
+        secrets_allinkl:
+          - key: KAS_USERNAME
+            value: '{{ lookup("community.general.onepassword", "Caddy All-Inkl KAS", field="username", vault="HomeLab") }}'
+          - key: KAS_PASSWORD
+            value: '{{ lookup("community.general.onepassword", "Caddy All-Inkl KAS", field="password", vault="HomeLab") }}'
+        secrets: "{{ secrets_cloudflare + (secrets_allinkl if caddy_tls_dns_allinkl_enabled else []) }}"
 
     - name: Configure vhosts
       ansible.builtin.include_tasks: vhosts.yml

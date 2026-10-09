@@ -1,14 +1,17 @@
 {{ ansible_managed | comment(decoration="# ") }}
 
+{# berger.saarland is hosted at all-inkl, everything else at cloudflare; override via vhost.tls_snippet #}
+{% set tls_snippet = vhost.tls_snippet | default('tls_allinkl' if vhost.hostname.endswith('berger.saarland') else 'tls_cloudflare', true) %}
+
 {% if vhost.www_redir %}
 www.{{ vhost.hostname }} {
-	import ../snippets/tls.conf
+	import {{ tls_snippet }}
 	redir https://{{ vhost.hostname }}{uri} permanent
 }
 {% endif -%}
 
 {{ vhost.hostname }} {
-	import ../snippets/tls.conf
+	import {{ tls_snippet }}
 	{{ 'encode zstd gzip' if vhost.compress else '' }}
 	log {
 		output file {{ caddy_log_path }}/{{ vhost.hostname }}.log {
