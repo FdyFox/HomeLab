@@ -82,4 +82,4 @@ docker_roles:
 #  - name: teddycloud
 #  - name: twitch_points
   - name: onepassword
-  - name: meshcore-tcp-mux
+  - name: meshcore-mux
