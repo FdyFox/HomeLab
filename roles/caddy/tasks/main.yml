@@ -1,9 +1,14 @@
 ---
 
 - name: Install caddy
-  ansible.builtin.include_tasks: install.yml
+  ansible.builtin.include_tasks:
+    file: install.yml
+    apply:
+      tags:
+        - caddy.setup
   tags:
     - caddy.setup
+    - always
 
 #- name: Install scraper
 #  ansible.builtin.include_tasks: tasks/alloy.yml
@@ -17,6 +22,11 @@
 #    - caddy.alloy
 
 - name: Generate Caddy config
-  ansible.builtin.include_tasks: configure.yml
+  ansible.builtin.include_tasks:
+    file: configure.yml
+    apply:
+      tags:
+        - caddy.configure
   tags:
     - caddy.configure
+    - always

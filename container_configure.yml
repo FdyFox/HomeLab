@@ -102,14 +102,22 @@
     - name: Install Docker
       ansible.builtin.include_role:
         name: docker
+        apply:
+          tags:
+            - docker
       when: inventory_hostname is match('.*(docker|authentik|forgejo|nextcloud|termix|paperless).*')
       tags:
         - docker
+        - always
 
     # Hosts with exactly one role (LXC-only or single-service Docker)
     # Runs only when container.search (or container.name) is found in inventory_hostname
     - name: 'Configure/Install role based container'
-      ansible.builtin.include_tasks: tasks/lxc_config.yml
+      ansible.builtin.include_tasks:
+        file: tasks/lxc_config.yml
+        apply:
+          tags:
+            - services
       vars:
         container: '{{ lxc }}'
       loop:
@@ -130,18 +138,23 @@
       loop_control:
         loop_var: lxc
       tags:
-        - docker.deploy
+        - services
+        - always
 
     # Hosts with multiple services — service list defined in host_vars
     - name: Deploy multi-service hosts
       ansible.builtin.include_role:
         name: '{{ service.name }}'
+        apply:
+          tags:
+            - services
       when: docker_roles is defined
       loop: '{{ docker_roles | default([]) }}'
       loop_control:
         loop_var: service
       tags:
-        - docker.deploy
+        - services
+        - always
 
     - name: Do OS update
       ansible.builtin.include_tasks: tasks/os_update.yml

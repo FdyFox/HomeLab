@@ -29,7 +29,10 @@
     owner: '{{ default_user }}'
     group: '{{ default_user }}'
     mode: '0755'
+  register: meshcore_mux_config
 
 - name: Run `docker compose up`
   community.docker.docker_compose_v2:
     project_src: '/home/{{ default_user }}/docker/meshcore-mux/'
+    # Config is bind-mounted; compose does not notice content changes
+    recreate: "{{ 'always' if meshcore_mux_config is changed else 'auto' }}"

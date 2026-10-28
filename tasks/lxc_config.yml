@@ -2,3 +2,6 @@
   ansible.builtin.include_role:
     name: '{{ container.role | default(container.name) }}'
   when: 'container.search | default(container.name) in inventory_hostname'
+  # Tags kommen per apply vom aufrufenden include
+  tags:
+    - always

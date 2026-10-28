@@ -1,0 +1,15 @@
+services:
+  meshboard:
+    image: ghcr.io/fdyfox/meshboard:test
+    restart: unless-stopped
+    user: 1000:1000
+    volumes:
+      - '{{ docker_container_data_folder }}/meshboard/data:/data:rw'
+    ports:
+      - "8090:8080"
+    environment:
+      MESHCORE_HOST: '{{ host_ip }}'
+      MESHCORE_PORT: 5003
+    read_only: true
+    cap_drop: ["ALL"]
+    security_opt: ["no-new-privileges:true"]

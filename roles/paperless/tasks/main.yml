@@ -1,11 +1,21 @@
 ---
 
 - name: Deploy Paperless-ngx
-  ansible.builtin.include_tasks: install.yml
+  ansible.builtin.include_tasks:
+    file: install.yml
+    apply:
+      tags:
+        - paperless.setup
   tags:
     - paperless.setup
+    - always
 
 - name: Install ProFTPd
-  ansible.builtin.include_tasks: proftp.yml
+  ansible.builtin.include_tasks:
+    file: proftp.yml
+    apply:
+      tags:
+        - paperless.ftp
   tags:
     - paperless.ftp
+    - always

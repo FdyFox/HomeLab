@@ -11,19 +11,46 @@ fi
 : "${HUB_TOKEN:?HUB_TOKEN is not set}"      # Ingress-Secret
 : "${HUB_SLUG:=unattended}"                 # Ingress-Slug (default)
 
-STATUS="${1:-unknown}"
 HOSTNAME="$(hostname)"
 TS="$(date -Is)"
 
 LOG_FILE="/var/log/unattended-upgrades/unattended-upgrades.log"
 TMP_LOG="$(mktemp)"
+trap 'rm -f "$TMP_LOG" /tmp/hub_resp.txt' EXIT
+RUN_LOG=""
+STATUS="${1:-}"
 
-if [ -r "$LOG_FILE" ]; then
-  tail -n 40 "$LOG_FILE" \
+# Startzeit des Service-Laufs (nur bei Aufruf durch systemd); ältere Logs ignorieren
+RUN_START=0
+if [ -z "$STATUS" ]; then
+  RUN_START="$(systemctl show -P ExecMainStartTimestamp --timestamp=unix apt-daily-upgrade.service 2>/dev/null || true)"
+  RUN_START="${RUN_START#@}"
+  RUN_START="${RUN_START:-0}"
+fi
+
+# Nur den letzten Lauf betrachten, und nur wenn er in diesem Service-Lauf geschrieben wurde
+if [ -r "$LOG_FILE" ] && [ "$(stat -c %Y "$LOG_FILE")" -ge "$RUN_START" ]; then
+  RUN_LOG="$(awk '/Starting unattended upgrades script/ {buf=""} {buf=buf $0 "\n"} END {printf "%s", buf}' "$LOG_FILE")"
+fi
+
+# Status: explizites Argument, sonst aus systemd ($SERVICE_RESULT) + Log ableiten
+if [ -z "$STATUS" ]; then
+  if [ "${SERVICE_RESULT:-success}" != "success" ] || grep -qE ' ERROR |failed' <<<"$RUN_LOG"; then
+    STATUS="error"
+  elif [ -z "$RUN_LOG" ] || grep -q 'No packages found that can be upgraded' <<<"$RUN_LOG"; then
+    # Nichts zu tun -> keine Benachrichtigung
+    exit 0
+  else
+    STATUS="success"
+  fi
+fi
+
+if [ -n "$RUN_LOG" ]; then
+  printf '%s' "$RUN_LOG" \
     | perl -pe 's/[[:cntrl:]&&[^\t\n\r]]/?/g' \
     | tail -c 900 > "$TMP_LOG"
 else
-  printf '%s' "(kein Logfile lesbar: %s)" "$LOG_FILE" > "$TMP_LOG"
+  printf '(kein Logfile lesbar: %s)' "$LOG_FILE" > "$TMP_LOG"
 fi
 
 if [ "$STATUS" = "success" ]; then
@@ -62,4 +89,3 @@ if [ "$HTTP_CODE" != "204" ]; then
   echo "Hub ingest failed: http=$HTTP_CODE body=$(cat /tmp/hub_resp.txt)" >&2
   exit 1
 fi
-rm -f "$TMP_LOG"

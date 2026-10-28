@@ -1,6 +1,8 @@
 ---
 
 - name: Get latest release tag from Codeberg
+  tags:
+    - forgejo.setup
 
   run_once: true
   block:
@@ -18,29 +20,52 @@
           | regex_replace('^v?(.*)$', '\\1') }}"
 
 - name: Latest version
+  tags:
+    - forgejo.setup
   ansible.builtin.debug:
     msg: "Latest version {{ latest_release }}"
 
 - name: Check if version file exists
+  tags:
+    - forgejo.setup
   ansible.builtin.stat:
     path: '{{ forgejo_version_file }}'
   register: release_file
 
 - name: Get version file
+  tags:
+    - forgejo.setup
   ansible.builtin.slurp:
     src: '{{ forgejo_version_file }}'
   register: current_release
   when: release_file.stat.exists
 
 - name: Install Forgejo
-  ansible.builtin.include_tasks: install.yml
+  ansible.builtin.include_tasks:
+    file: install.yml
+    apply:
+      tags:
+        - forgejo.setup
   when: (not release_file.stat.exists) or (latest_release not in current_release['content'] | b64decode)
-  tags: forgejo.setup
+  tags:
+    - forgejo.setup
 
 - name: Deploy Forgejo runner
-  ansible.builtin.include_tasks: runner.yml
-  tags: forgejo.runner
+  ansible.builtin.include_tasks:
+    file: runner.yml
+    apply:
+      tags:
+        - forgejo.runner
+  tags:
+    - forgejo.runner
+    - always
 
 - name: Customize Forgejo
-  ansible.builtin.include_tasks: customize.yml
-  tags: forgejo.customize
+  ansible.builtin.include_tasks:
+    file: customize.yml
+    apply:
+      tags:
+        - forgejo.customize
+  tags:
+    - forgejo.customize
+    - always

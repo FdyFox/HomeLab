@@ -3,11 +3,21 @@
 # Source script: https://github.com/stevenengland/ntfy_ansible_role/tree/master
 
 - name: Install Ntfy
-  ansible.builtin.include_tasks: install.yml
+  ansible.builtin.include_tasks:
+    file: install.yml
+    apply:
+      tags:
+        - ntfy.setup
   tags:
     - ntfy.setup
+    - always
 
 - name: Configure Ntfy
-  ansible.builtin.include_tasks: configuration.yml
+  ansible.builtin.include_tasks:
+    file: configuration.yml
+    apply:
+      tags:
+        - ntfy.configure
   tags:
     - ntfy.configure
+    - always

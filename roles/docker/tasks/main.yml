@@ -1,9 +1,14 @@
 ---
 
 - name: Install Docker
-  ansible.builtin.include_tasks: install_docker.yml
+  ansible.builtin.include_tasks:
+    file: install_docker.yml
+    apply:
+      tags:
+        - docker.setup
   tags:
     - docker.setup
+    - always
 
 # - name: Deploy default Container
 #  ansible.builtin.include_tasks: default_container.yml

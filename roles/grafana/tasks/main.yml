@@ -1,9 +1,14 @@
 ---
 
 - name: Install Grafana and Loki
-  ansible.builtin.include_tasks: install.yml
+  ansible.builtin.include_tasks:
+    file: install.yml
+    apply:
+      tags:
+        - grafana.setup
   tags:
     - grafana.setup
+    - always
 
 - name: Setup Loki datasource
   community.grafana.grafana_datasource:

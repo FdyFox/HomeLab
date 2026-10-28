@@ -48,6 +48,10 @@ proxy:
 #    hostname: 'ftools.berger-em.net'
 #    proxy_host: 'http://{{ host_ip }}:3000'
 
+  - name: meshboard
+    hostname: 'meshboard.berger-em.net'
+    proxy_host: 'http://{{ host_ip }}:8090'
+
   - name: minimailer
     hostname: 'minimailer.berger-em.net'
     proxy_host: 'http://{{ host_ip }}:5000'
@@ -83,3 +87,4 @@ docker_roles:
 #  - name: twitch_points
   - name: onepassword
   - name: meshcore-mux
+  - name: meshboard

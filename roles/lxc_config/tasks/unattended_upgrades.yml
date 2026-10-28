@@ -17,10 +17,31 @@
     group: root
     mode: '0644'
 
-- name: Add unattended-upgrades notify hook config
+- name: Enable periodic unattended upgrades
   ansible.builtin.template:
-    src: 99unattended-notify.j2
-    dest: /etc/apt/apt.conf.d/99unattended-notify
+    src: 20auto-upgrades.j2
+    dest: /etc/apt/apt.conf.d/20auto-upgrades
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Remove old (non-functional) notify hook config
+  ansible.builtin.file:
+    path: /etc/apt/apt.conf.d/99unattended-notify
+    state: absent
+
+- name: Create apt-daily-upgrade drop-in directory
+  ansible.builtin.file:
+    path: /etc/systemd/system/apt-daily-upgrade.service.d
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Add notify hook to apt-daily-upgrade service
+  ansible.builtin.template:
+    src: apt-daily-upgrade-notify.conf.j2
+    dest: /etc/systemd/system/apt-daily-upgrade.service.d/notify.conf
     owner: root
     group: root
     mode: '0644'
@@ -43,6 +64,12 @@
       HUB_URL={{ lxc_config_hub_url }}
       HUB_TOKEN={{ lookup("community.general.onepassword", "Notification Hub", section="Tokens", field="unattended", vault="HomeLab") }}
       HUB_SLUG=unattended
+
+# Unconditional, so a drop-in written by an aborted earlier run still gets loaded
+- name: Reload systemd units
+  ansible.builtin.systemd_service:
+    daemon_reload: true
+  changed_when: false
 
 - name: Enable apt timers
   ansible.builtin.systemd:

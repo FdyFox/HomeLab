@@ -56,11 +56,12 @@
     - name: Add APT-Repository
       ansible.builtin.deb822_repository:
         name: ntfy
-        uris: 'https://archive.heckel.io/apt'
+        uris: 'https://archive.ntfy.sh/apt'
         types: deb
-        suites: debian
+        suites: stable
         components: main
-        signed_by: 'https://archive.heckel.io/apt/pubkey.txt'
+        architectures: amd64
+        signed_by: 'https://archive.ntfy.sh/apt/keyring.gpg'
         state: present
 
     - name: Install ntfy
