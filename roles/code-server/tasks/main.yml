@@ -1,0 +1,92 @@
+---
+
+- name: Determine latest GitHub release
+  ansible.builtin.uri:
+    url: '{{ code_server_github_url }}'
+    body_format: json
+  register: _github_release
+  until: _github_release.status == 200
+  retries: 5
+
+- name: Set latest_release
+  ansible.builtin.set_fact:
+    latest_release: "{{ _github_release.json.tag_name | regex_replace('^v?(.*)$', '\\1') }}"
+
+- name: Install code-server
+  ansible.builtin.apt:
+    deb: 'https://github.com/coder/code-server/releases/download/v{{ latest_release }}/code-server_{{ latest_release }}_amd64.deb'
+  become: true
+  notify: Restart code-server
+
+- name: Create config dir
+  ansible.builtin.file:
+    path: '/home/{{ code_server_user }}/.config/code-server'
+    state: directory
+    owner: '{{ code_server_user }}'
+    group: '{{ code_server_user }}'
+    mode: '0755'
+  become: true
+
+- name: Create config file
+  ansible.builtin.template:
+    src: config.yaml.j2
+    dest: '/home/{{ code_server_user }}/.config/code-server/config.yaml'
+    owner: '{{ code_server_user }}'
+    group: '{{ code_server_user }}'
+    mode: '0600'
+  become: true
+  notify: Restart code-server
+
+- name: Install mise and dev tools
+  ansible.builtin.include_tasks:
+    file: mise.yml
+    apply:
+      tags:
+        - code-server.mise
+  tags:
+    - code-server.mise
+    - always
+
+- name: Enable and start service
+  ansible.builtin.systemd_service:
+    name: 'code-server@{{ code_server_user }}'
+    enabled: true
+    state: started
+  become: true
+
+- name: Get installed extensions
+  ansible.builtin.command:
+    cmd: code-server --list-extensions
+  register: _installed_extensions
+  changed_when: false
+  become: true
+  become_user: '{{ code_server_user }}'
+
+- name: Install extensions
+  ansible.builtin.command:
+    cmd: 'code-server --install-extension {{ item }}'
+  loop: '{{ code_server_extensions }}'
+  when: item | lower not in (_installed_extensions.stdout_lines | map('lower'))
+  changed_when: true
+  become: true
+  become_user: '{{ code_server_user }}'
+
+- name: Create user settings dir
+  ansible.builtin.file:
+    path: '/home/{{ code_server_user }}/.local/share/code-server/User'
+    state: directory
+    owner: '{{ code_server_user }}'
+    group: '{{ code_server_user }}'
+    mode: '0755'
+  become: true
+
+- name: Create user settings
+  ansible.builtin.template:
+    src: settings.json.j2
+    dest: '/home/{{ code_server_user }}/.local/share/code-server/User/settings.json'
+    owner: '{{ code_server_user }}'
+    group: '{{ code_server_user }}'
+    mode: '0644'
+    # Only create once, later changes via UI are kept
+    force: false
+  become: true

@@ -56,7 +56,7 @@
 
     - name: Set facts
       ansible.builtin.set_fact:
-        created_hosts: '{{ created_hosts | combine({item.item.host_name: {"node": item.vhost.node, "vmid": item.vhost.vmid}}) }}'
+        created_hosts: '{{ created_hosts | default({}) | combine({item.item.host_name: {"node": item.invocation.module_args.node, "vmid": item.invocation.module_args.vmid}}) }}'
       with_items: '{{ created_lxc_container.results }}'
       when: item.changed # noqa: no-handler
 
@@ -70,7 +70,7 @@
         node: '{{ item.value.node | default(pve_lxc_defaults.node) }}'
         hostname: '{{ item.key }}'
         state: started
-      with_dict: '{{ created_hosts }}'
+      with_dict: '{{ created_hosts | default({}) }}'
       notify:
         - Sleep
 
@@ -79,4 +79,4 @@
       vars:
         lxc_node: '{{ item.value.node }}'
         lxc_id: '{{ item.value.vmid }}'
-      with_dict: '{{ created_hosts }}'
+      with_dict: '{{ created_hosts | default({}) }}'

@@ -1,0 +1,98 @@
+---
+
+- name: Install mise
+  become: true
+  block:
+    - name: Install dependencies
+      ansible.builtin.apt:
+        update_cache: true
+        pkg:
+          - gnupg
+          - build-essential
+          - unzip
+          - xz-utils
+
+    - name: Add APT-Repository
+      ansible.builtin.deb822_repository:
+        name: mise
+        uris: 'https://mise.jdx.dev/deb'
+        types: deb
+        suites: stable
+        components: main
+        architectures: amd64
+        signed_by: 'https://mise.jdx.dev/gpg-key.pub'
+        state: present
+
+    - name: Install mise
+      ansible.builtin.apt:
+        update_cache: true
+        name: mise
+
+- name: Create mise config dir
+  ansible.builtin.file:
+    path: '/home/{{ code_server_user }}/.config/mise'
+    state: directory
+    owner: '{{ code_server_user }}'
+    group: '{{ code_server_user }}'
+    mode: '0755'
+  become: true
+
+- name: Create global mise config
+  ansible.builtin.template:
+    src: mise_config.toml.j2
+    dest: '/home/{{ code_server_user }}/.config/mise/config.toml'
+    owner: '{{ code_server_user }}'
+    group: '{{ code_server_user }}'
+    mode: '0644'
+  become: true
+
+- name: Install mise tools
+  ansible.builtin.command:
+    cmd: mise install --yes
+  register: _mise_install
+  changed_when: _mise_install.stderr is not search('all (tools|runtimes) are installed')
+  become: true
+  become_user: '{{ code_server_user }}'
+
+# Shims for login shells (SSH / VS Code Remote-SSH), activate for interactive shells
+- name: Add mise shims to PATH
+  ansible.builtin.lineinfile:
+    path: '/home/{{ code_server_user }}/.profile'
+    line: 'export PATH="$HOME/.local/share/mise/shims:$PATH"'
+    create: true
+    owner: '{{ code_server_user }}'
+    group: '{{ code_server_user }}'
+    mode: '0644'
+  become: true
+
+- name: Activate mise in bash
+  ansible.builtin.lineinfile:
+    path: '/home/{{ code_server_user }}/.bashrc'
+    line: 'eval "$(mise activate bash)"'
+    create: true
+    owner: '{{ code_server_user }}'
+    group: '{{ code_server_user }}'
+    mode: '0644'
+  become: true
+
+# code-server runs as systemd service and does not read the shell profile
+- name: Create code-server service drop-in dir
+  ansible.builtin.file:
+    path: '/etc/systemd/system/code-server@{{ code_server_user }}.service.d'
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  become: true
+
+- name: Add mise shims to code-server PATH
+  ansible.builtin.copy:
+    dest: '/etc/systemd/system/code-server@{{ code_server_user }}.service.d/mise.conf'
+    content: |
+      [Service]
+      Environment=PATH=/home/{{ code_server_user }}/.local/share/mise/shims:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  notify: Restart code-server

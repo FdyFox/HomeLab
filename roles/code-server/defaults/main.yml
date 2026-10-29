@@ -1,0 +1,92 @@
+---
+
+code_server_github_url: https://api.github.com/repos/coder/code-server/releases/latest
+
+code_server_user: '{{ default_user }}'
+code_server_port: 8443
+
+# Extensions from Open VSX (https://open-vsx.org), not the Microsoft marketplace
+code_server_extensions:
+  # Python
+  - charliermarsh.ruff
+  - detachhead.basedpyright
+  - ms-python.python
+
+  # Go
+  - golang.go
+
+  # Docker / YAML / TOML
+  - ms-azuretools.vscode-docker
+  - exiasr.hadolint
+  - redhat.vscode-yaml
+  - tamasfe.even-better-toml
+
+  # Shell
+  - timonwong.shellcheck
+  - foxundermoon.shell-format
+
+  # Markdown / Hugo
+  - yzhang.markdown-all-in-one
+  - davidanson.vscode-markdownlint
+  - budparr.language-hugo-vscode
+
+  # General
+  - eamodio.gitlens
+  - editorconfig.editorconfig
+
+# Initial user settings, rendered once to ~/.local/share/code-server/User/settings.json
+code_server_settings:
+  # General
+  workbench.colorTheme: "Default Dark Modern"
+  telemetry.telemetryLevel: "off"
+  update.mode: "none"
+  workbench.startupEditor: "none"
+  editor.formatOnSave: true
+  editor.rulers: [100]
+  files.trimTrailingWhitespace: true
+  files.insertFinalNewline: true
+  files.trimFinalNewlines: true
+  git.autofetch: true
+  git.confirmSync: false
+
+  # Python
+  "[python]":
+    editor.defaultFormatter: "charliermarsh.ruff"
+    editor.codeActionsOnSave:
+      source.fixAll: "explicit"
+      source.organizeImports: "explicit"
+  python.languageServer: "None"
+  basedpyright.analysis.typeCheckingMode: "standard"
+
+  # Go
+  "[go]":
+    editor.defaultFormatter: "golang.go"
+  go.toolsManagement.autoUpdate: true
+
+  # YAML / TOML
+  "[yaml]":
+    editor.defaultFormatter: "redhat.vscode-yaml"
+    editor.tabSize: 2
+  "[toml]":
+    editor.defaultFormatter: "tamasfe.even-better-toml"
+
+  # Shell
+  "[shellscript]":
+    editor.defaultFormatter: "foxundermoon.shell-format"
+
+  # Markdown
+  "[markdown]":
+    editor.defaultFormatter: "yzhang.markdown-all-in-one"
+    editor.formatOnSave: false
+
+# Global mise tools, rendered to ~/.config/mise/config.toml
+code_server_mise_tools:
+  python: "3.13"
+  go: "latest"
+  uv: "latest"
+  ruff: "latest"
+  golangci-lint: "latest"
+  hadolint: "latest"
+  hugo-extended: "latest"
+  shellcheck: "latest"
+  shfmt: "latest"

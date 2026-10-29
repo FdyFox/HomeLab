@@ -1,0 +1,6 @@
+{{ ansible_managed | comment(decoration="# ") }}
+
+[tools]
+{% for tool, version in code_server_mise_tools.items() %}
+{{ tool }} = "{{ version }}"
+{% endfor %}

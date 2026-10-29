@@ -1,0 +1,6 @@
+{{ ansible_managed | comment(decoration="# ") }}
+
+bind-addr: 0.0.0.0:{{ code_server_port }}
+# Authentication is handled by Caddy (private networks only) / Pangolin
+auth: none
+cert: false

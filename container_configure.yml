@@ -105,7 +105,7 @@
         apply:
           tags:
             - docker
-      when: inventory_hostname is match('.*(docker|authentik|forgejo|nextcloud|termix|paperless).*')
+      when: inventory_hostname is match('.*(docker|authentik|forgejo|nextcloud|termix|paperless|code-server).*')
       tags:
         - docker
         - always
@@ -131,6 +131,7 @@
         - name: forgejo
         - name: authentik
         - name: termix
+        - name: code-server
         - name: paperless
         - name: nextcloud
         - name: kestra
