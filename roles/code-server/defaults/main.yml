@@ -5,6 +5,10 @@ code_server_github_url: https://api.github.com/repos/coder/code-server/releases/
 code_server_user: '{{ default_user }}'
 code_server_port: 8443
 
+# Git servers whose credentials are persisted in ~/.git-credentials (GitHub uses gh)
+code_server_git_credential_store_urls:
+  - https://git.berger-em.net
+
 # Extensions from Open VSX (https://open-vsx.org), not the Microsoft marketplace
 code_server_extensions:
   # Python

@@ -1,6 +1,6 @@
 ---
 
-- name: Install direnv and 1Password CLI
+- name: Install direnv, 1Password CLI and GitHub CLI
   become: true
   block:
     # Manual setup per 1Password docs conflicts with the deb822 source (different Signed-By)
@@ -23,12 +23,25 @@
         signed_by: 'https://downloads.1password.com/linux/keys/1password.asc'
         state: present
 
+    # gitconfig from dotfiles expects /usr/bin/gh as credential helper for GitHub
+    - name: Add GitHub CLI APT-Repository
+      ansible.builtin.deb822_repository:
+        name: github-cli
+        uris: 'https://cli.github.com/packages'
+        types: deb
+        suites: stable
+        components: main
+        architectures: amd64
+        signed_by: 'https://cli.github.com/packages/githubcli-archive-keyring.gpg'
+        state: present
+
     - name: Install packages
       ansible.builtin.apt:
         update_cache: true
         pkg:
           - direnv
           - 1password-cli
+          - gh
 
 - name: Activate direnv in bash
   ansible.builtin.lineinfile:
@@ -40,3 +53,23 @@
     group: '{{ code_server_user }}'
     mode: '0644'
   become: true
+
+# ~/.gitconfig is a symlink into the dotfiles repo, so use the XDG config file instead
+- name: Create git config dir
+  ansible.builtin.file:
+    path: '/home/{{ code_server_user }}/.config/git'
+    state: directory
+    owner: '{{ code_server_user }}'
+    group: '{{ code_server_user }}'
+    mode: '0755'
+  become: true
+
+- name: Store git credentials for own git servers
+  community.general.git_config:
+    scope: file
+    file: '/home/{{ code_server_user }}/.config/git/config'
+    name: 'credential.{{ item }}.helper'
+    value: store
+  loop: '{{ code_server_git_credential_store_urls }}'
+  become: true
+  become_user: '{{ code_server_user }}'

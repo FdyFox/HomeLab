@@ -47,7 +47,7 @@
     - code-server.mise
     - always
 
-- name: Install direnv and 1Password CLI
+- name: Install CLI tools and git credential setup
   ansible.builtin.include_tasks:
     file: tools.yml
     apply:
