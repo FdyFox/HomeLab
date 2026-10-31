@@ -47,6 +47,16 @@
     - code-server.mise
     - always
 
+- name: Install direnv and 1Password CLI
+  ansible.builtin.include_tasks:
+    file: tools.yml
+    apply:
+      tags:
+        - code-server.tools
+  tags:
+    - code-server.tools
+    - always
+
 - name: Enable and start service
   ansible.builtin.systemd_service:
     name: 'code-server@{{ code_server_user }}'

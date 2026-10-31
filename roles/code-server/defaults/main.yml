@@ -33,11 +33,13 @@ code_server_extensions:
   # General
   - eamodio.gitlens
   - editorconfig.editorconfig
+  - anthropic.claude-code
+  - ms-ceintl.vscode-language-pack-de
 
 # Initial user settings, rendered once to ~/.local/share/code-server/User/settings.json
 code_server_settings:
   # General
-  workbench.colorTheme: "Default Dark Modern"
+  workbench.colorTheme: "Dark 2026"
   telemetry.telemetryLevel: "off"
   update.mode: "none"
   workbench.startupEditor: "none"
@@ -48,6 +50,27 @@ code_server_settings:
   files.trimFinalNewlines: true
   git.autofetch: true
   git.confirmSync: false
+  git.defaultCloneDirectory: "~/src"
+  keyboard.layout: "00000407"
+  claudeCode.hideOnboarding: true
+
+  # Terminal
+  terminal.integrated.fontFamily: "'MonaspiceRn NFM', 'MonaspiceRn Nerd Font Mono', 'MesloLGS NF', 'UbuntuMono Nerd Font', monospace"
+  terminal.integrated.defaultProfile.linux: "zsh"
+  terminal.integrated.profiles.linux:
+    bash:
+      path: "bash"
+      icon: "terminal-bash"
+    zsh:
+      path: "/usr/bin/zsh"
+    fish:
+      path: "fish"
+    tmux:
+      path: "tmux"
+      icon: "terminal-tmux"
+    pwsh:
+      path: "pwsh"
+      icon: "terminal-powershell"
 
   # Python
   "[python]":
@@ -78,6 +101,8 @@ code_server_settings:
   "[markdown]":
     editor.defaultFormatter: "yzhang.markdown-all-in-one"
     editor.formatOnSave: false
+    editor.wordWrap: "on"
+    files.trimTrailingWhitespace: false
 
 # Global mise tools, rendered to ~/.config/mise/config.toml
 code_server_mise_tools:

@@ -1,0 +1,42 @@
+---
+
+- name: Install direnv and 1Password CLI
+  become: true
+  block:
+    # Manual setup per 1Password docs conflicts with the deb822 source (different Signed-By)
+    - name: Remove legacy 1Password APT source and keyring
+      ansible.builtin.file:
+        path: '{{ item }}'
+        state: absent
+      loop:
+        - /etc/apt/sources.list.d/1password.list
+        - /usr/share/keyrings/1password-archive-keyring.gpg
+
+    - name: Add 1Password APT-Repository
+      ansible.builtin.deb822_repository:
+        name: 1password
+        uris: 'https://downloads.1password.com/linux/debian/amd64'
+        types: deb
+        suites: stable
+        components: main
+        architectures: amd64
+        signed_by: 'https://downloads.1password.com/linux/keys/1password.asc'
+        state: present
+
+    - name: Install packages
+      ansible.builtin.apt:
+        update_cache: true
+        pkg:
+          - direnv
+          - 1password-cli
+
+- name: Activate direnv in bash
+  ansible.builtin.lineinfile:
+    path: '/home/{{ code_server_user }}/.bashrc'
+    line: 'eval "$(direnv hook bash)"'
+    insertafter: EOF
+    create: true
+    owner: '{{ code_server_user }}'
+    group: '{{ code_server_user }}'
+    mode: '0644'
+  become: true
