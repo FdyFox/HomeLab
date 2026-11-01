@@ -1,6 +1,6 @@
 ---
 
-- name: Install direnv, 1Password CLI and GitHub CLI
+- name: Install direnv, 1Password CLI, GitHub CLI and lftp
   become: true
   block:
     # Manual setup per 1Password docs conflicts with the deb822 source (different Signed-By)
@@ -42,6 +42,8 @@
           - direnv
           - 1password-cli
           - gh
+          # deploy.sh of fdyfox.com uploads via FTP
+          - lftp
 
 - name: Activate direnv in bash
   ansible.builtin.lineinfile:
