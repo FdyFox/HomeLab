@@ -1,6 +1,37 @@
 ---
-
 glance_github_url: https://api.github.com/repos/glanceapp/glance/releases/latest
 
 glance_version_file: /opt/glance.txt
 glance_install_folder: /opt/glance
+
+# Dashboard monitor groups in display order.
+# Sites are collected from all `proxy:` entries in host_vars that have a
+# `dashboard:` block (group, title, icon, optional url / alt_status_codes)
+# plus `glance_extra_sites` below.
+glance_monitor_groups:
+  - Infrastructure
+  - Applications
+  - Services
+  - Servarr
+  - Downloader
+
+# Sites without an own proxy entry in this repo (other proxy, disabled host, ...)
+glance_extra_sites:
+  - {
+      group: Applications,
+      title: Home Assistant,
+      url: "https://hass.berger.saarland",
+      icon: "di:home-assistant",
+    }
+  - {
+      group: Services,
+      title: Pangolin,
+      url: "https://pangolin.berger-em.net",
+      icon: "di:pangolin",
+    }
+  - {
+      group: Services,
+      title: Twitch Points,
+      url: "https://twitch-points.berger-em.net",
+      icon: "di:twitch",
+    }

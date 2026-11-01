@@ -23,3 +23,7 @@ proxy:
     hostname: 'git.berger-em.net'
     proxy_host: 'http://{{ host_ip }}:3000'
     protected_enabled: false
+    dashboard:
+      group: Services
+      title: Forgejo
+      icon: 'di:forgejo'

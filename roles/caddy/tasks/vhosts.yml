@@ -10,9 +10,10 @@
     lstrip_blocks: true
   vars:
     # merge *defaults* (left) with *proxy entry* (right) - proxy overrides defaults
-    vhost: "{{ caddy_vhost_defaults | combine(proxy, recursive=True, list_merge='replace') }}"
+    vhost: "{{ caddy_vhost_defaults | combine(proxy_entry, recursive=True, list_merge='replace') }}"
   loop: "{{ hostvars[lxc_host].proxy | default([]) }}"
   loop_control:
-    loop_var: proxy
+    loop_var: proxy_entry
+    label: "{{ proxy_entry.hostname }}"
   notify: Reload caddy
   tags: caddy.vhosts

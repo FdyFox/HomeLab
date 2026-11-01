@@ -22,17 +22,13 @@ proxy:
     protected_private: true
     protected_internal: false
 
-  - name: gitea
-    hostname: "gitea.berger-em.net"
-    proxy_host: http://192.168.20.11:3000
-
   - name: hardbase
     hostname: "hardbase.berger-em.net"
     proxy_host: https://192.168.1.12:5001
-
-  - name: mqtt
-    hostname: "mqtt.berger-em.net"
-    proxy_host: http://192.168.20.10:1883
+    dashboard:
+      group: Services
+      title: Hardbase
+      icon: "di:synology"
 
   - name: pikachu
     hostname: "pikachu.berger-em.net"
@@ -44,12 +40,25 @@ proxy:
     proxy_host: https://192.168.1.14:8006
     protected_private: true
     protected_internal: false
+    dashboard:
+      group: Infrastructure
+      title: Proxmox
+      icon: "di:proxmox"
 
   - name: udm
     hostname: "udm.berger-em.net"
     proxy_host: https://192.168.1.1:443
+    # UniFi OS answers websocket handshakes (/api/ws/system) with 500
+    # unless Host/Origin match the console itself
+    proxy_headers_up:
+      - 'Host 192.168.1.1'
+      - 'Origin https://192.168.1.1'
     protected_private: true
     protected_internal: false
+    dashboard:
+      group: Infrastructure
+      title: UDM
+      icon: "di:ubiquiti-networks"
 
   - name: hass
     hostname: "hass.berger.saarland"

@@ -89,16 +89,9 @@
     - size: small
       widgets:
         - type: weather
-          location: Emmendingen, Germany
+          location: Püttlingen, Germany
           units: metric
           hour-format: 24h
-
-        - type: change-detection
-          title: Changes
-          instance-url: https://changedetection.berger-em.net
-          token: 4db54a82c3e77925bd1525dbf890c47a
-          collapse-after: 5
-          cache: 1h
 
         - type: custom-api
           title: Steam Specials

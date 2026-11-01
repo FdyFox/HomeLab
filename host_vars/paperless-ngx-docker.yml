@@ -27,3 +27,7 @@ proxy:
     proxy_host: 'http://{{ host_ip }}'
     protected_private: true
     protected_internal: false
+    dashboard:
+      group: Applications
+      title: Paperless
+      icon: 'di:paperless-ngx'

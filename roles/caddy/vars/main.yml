@@ -9,6 +9,10 @@ caddy_vhost_defaults:
   compress: true
   proxy_host: null
   proxy_transparent_disable: false
+  # e.g. ['1.1'] for HTTPS backends whose websockets fail over HTTP/2 (UniFi OS)
+  proxy_http_versions: []
+  # Extra `header_up` lines, e.g. ['Host {upstream_hostport}']
+  proxy_headers_up: []
   security_headers: false
   basicauth: false
   basicauth_path: "/"

@@ -23,3 +23,7 @@ proxy:
     hostname: auth.berger-em.net
     proxy_host: 'http://{{ host_ip }}:80'
     protected_enabled: false
+    dashboard:
+      group: Services
+      title: Authentik
+      icon: 'di:authentik'

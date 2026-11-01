@@ -24,3 +24,7 @@ proxy:
     proxy_host: 'http://{{ host_ip }}:8080'
     protected_private: true
     protected_internal: false
+    dashboard:
+      group: Infrastructure
+      title: Termix
+      icon: 'di:termix'

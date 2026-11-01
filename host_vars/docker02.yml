@@ -23,6 +23,10 @@ proxy:
     hostname: 'bazarr.berger-em.net'
     proxy_host: 'http://{{ host_ip }}:6767'
     protected_enabled: false
+    dashboard:
+      group: Servarr
+      title: Bazarr
+      icon: 'di:bazarr'
 
   - name: gluten
     hostname: 'gluten.berger-em.net'
@@ -31,34 +35,67 @@ proxy:
   - name: jellyseerr
     hostname: 'jellyseerr.berger-em.net'
     proxy_host: 'http://{{ host_ip }}:5055'
+    dashboard:
+      group: Applications
+      title: Jellyseerr
+      icon: 'di:jellyseerr'
 
   - name: komodo
     hostname: 'komo.berger-em.net'
     proxy_host: 'http://{{ host_ip }}:9120'
+    dashboard:
+      group: Infrastructure
+      title: Komodo
+      icon: 'di:komodo'
 
   - name: lidarr
     hostname: 'lidarr.berger-em.net'
     proxy_host: 'http://{{ host_ip }}:8686'
+    dashboard:
+      group: Servarr
+      title: Lidarr
+      icon: 'di:lidarr'
 
   - name: nzb
     hostname: 'nzb.berger-em.net'
     proxy_host: 'http://{{ host_ip }}:6789'
+    dashboard:
+      group: Downloader
+      title: NZBGet
+      icon: 'di:nzbget'
+      alt_status_codes: [401, 403]
 
   - name: prowlarr
     hostname: 'prowlarr.berger-em.net'
     proxy_host: 'http://{{ host_ip }}:9696'
+    dashboard:
+      group: Downloader
+      title: Prowlarr
+      icon: 'di:prowlarr'
 
   - name: qbit
     hostname: 'qbit.berger-em.net'
     proxy_host: 'http://{{ host_ip }}:8080'
+    dashboard:
+      group: Downloader
+      title: qBittorrent
+      icon: 'di:qbittorrent'
 
   - name: radarr
     hostname: 'radarr.berger-em.net'
     proxy_host: 'http://{{ host_ip }}:7878'
+    dashboard:
+      group: Servarr
+      title: Radarr
+      icon: 'di:radarr'
 
   - name: sonarr
     hostname: 'sonarr.berger-em.net'
     proxy_host: 'http://{{ host_ip }}:8989'
+    dashboard:
+      group: Servarr
+      title: Sonarr
+      icon: 'di:sonarr'
 
   - name: terminal
     hostname: 'terminal.berger-em.net'
@@ -73,6 +110,10 @@ proxy:
   - name: lose
     hostname: 'lose.berger-em.net'
     proxy_host: 'http://{{ host_ip }}:6050'
+    dashboard:
+      group: Applications
+      title: Rubbellose
+      icon: 'sh:tradetally'
 
 # Services deployed on this host
 docker_roles:

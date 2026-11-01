@@ -35,6 +35,10 @@ proxy:
   - name: audiobookshelf
     hostname: 'audiobookshelf.berger-em.net'
     proxy_host: 'http://{{ host_ip }}:8080'
+    dashboard:
+      group: Applications
+      title: AudiobookShelf
+      icon: 'di:audiobookshelf'
 
 #  - name: changedetection
 #    hostname: 'changedetection.berger-em.net'
@@ -56,12 +60,20 @@ proxy:
     hostname: 'minimailer.berger-em.net'
     proxy_host: 'http://{{ host_ip }}:5000'
     authentik_enabled: true
+    dashboard:
+      group: Services
+      title: Minimailer
+      icon: 'di:ciphermail'
 
   - name: portainer
     hostname: 'portainer.berger-em.net'
     proxy_host: 'https://{{ host_ip }}:9443'
     protected_private: true
     protected_internal: false
+    dashboard:
+      group: Infrastructure
+      title: Portainer
+      icon: 'di:portainer'
 
 #  - name: teddycloud
 #    hostname: 'teddycloud.berger-em.net'

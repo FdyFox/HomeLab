@@ -76,15 +76,21 @@ www.{{ vhost.hostname }} {
 {% endif %}
 	reverse_proxy {{ vhost.proxy_host }} {
 		# You can add custom settings here
-		{% if vhost.proxy_transparent_disable %} {
+		{% if vhost.proxy_transparent_disable %}
 		header_up -X-Forwarded-For
 		header_up -X-Forwarded-Proto
 		header_up -Host
 		{% endif %}
+		{% for header in vhost.proxy_headers_up %}
+		header_up {{ header }}
+		{% endfor %}
 		{% if "https" in vhost.proxy_host %}
 		transport http {
 			tls
 			tls_insecure_skip_verify
+			{% if vhost.proxy_http_versions %}
+			versions {{ vhost.proxy_http_versions | join(' ') }}
+			{% endif %}
 		}
 		{% endif %}
 	}

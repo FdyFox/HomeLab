@@ -10,7 +10,9 @@
         path: "{{ caddy_config_path }}/vhosts"
         state: absent
 
+    # Same tag as the removal above, otherwise `--tags caddy.vhosts` deletes the dir without recreating it
     - name: Create vhosts directory
+      tags: caddy.vhosts
       ansible.builtin.file:
         path: "{{ item }}"
         state: directory

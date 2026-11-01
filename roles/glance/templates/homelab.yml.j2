@@ -1,0 +1,64 @@
+- name: HomeLab
+  columns:
+    - size: full
+      widgets:
+        - type: split-column
+          max-columns: 4
+          widgets:
+{#
+            - type: dns-stats
+              service: adguard
+              title: dns1.berger-em.net
+              hide-graph: true
+              hide-top-domains: true
+              hour-format: 24h
+              url: https://dns1.berger-em.net
+              username: ${ADGUARD_USER}
+              password: ${ADGUARD_PASSWORD}
+            - type: dns-stats
+              service: adguard
+              title: dns2.berger-em.net
+              hide-graph: true
+              hide-top-domains: true
+              hour-format: 24h
+              url: https://dns2.berger-em.net
+              username: ${ADGUARD_USER}
+              password: ${ADGUARD_PASSWORD}
+#}
+            - $include: modules/gluten.yml
+#            - $include: modules/minecraft.yml
+#            - $include: modules/hass.yml
+            - $include: modules/paperless.yml
+            - $include: modules/proxmox.yml
+            - $include: modules/audio.yml
+
+{# Collect sites from all proxy entries with a dashboard block + extra sites #}
+{% set sites = [] %}
+{% for host in groups['proxmox_all_lxc'] | sort %}
+{%   for entry in hostvars[host].proxy | default([]) if entry.dashboard is defined %}
+{%     set _ = sites.append(entry.dashboard | combine({'url': entry.dashboard.url | default('https://' ~ entry.hostname)})) %}
+{%   endfor %}
+{% endfor %}
+{% set sites = sites + glance_extra_sites %}
+{% for group in glance_monitor_groups %}
+{%   set group_sites = sites | selectattr('group', 'equalto', group) | sort(attribute='title', case_sensitive=false) %}
+{%   if group_sites | length > 0 %}
+        - type: monitor
+          title: {{ group }}
+          cache: 1m
+          sites:
+{%     for site in group_sites %}
+            - title: {{ site.title }}
+              url: {{ site.url }}
+              icon: {{ site.icon }}
+{%       if site.alt_status_codes is defined %}
+              alt-status-codes:
+{%         for code in site.alt_status_codes %}
+                - {{ code }}
+{%         endfor %}
+{%       endif %}
+{%     endfor %}
+
+{%   endif %}
+{% endfor %}
+        - $include: modules/komodo.yml

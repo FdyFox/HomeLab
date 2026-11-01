@@ -22,3 +22,7 @@ proxy:
   - name: '{{ host_name }}'
     hostname: 'kuma.berger-em.net'
     proxy_host: 'http://{{ host_ip }}:3001'
+    dashboard:
+      group: Services
+      title: Uptime Kuma
+      icon: 'di:uptime-kuma'

@@ -22,3 +22,7 @@ proxy:
   - name: '{{ host_name }}'
     hostname: '{{ host_name }}.berger-em.net'
     proxy_host: 'http://{{ host_ip }}:3000'
+    dashboard:
+      group: Applications
+      title: Semaphore
+      icon: 'di:semaphore'

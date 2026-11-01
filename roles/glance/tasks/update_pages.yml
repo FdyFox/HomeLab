@@ -44,9 +44,17 @@
         mode: '0775'
       loop:
         - glance.yml
-        - homelab.yml
         - news.yml
         - modules/
+
+    # Monitor lists are generated from the `dashboard:` blocks of all proxy entries
+    - name: Create homelab page
+      ansible.builtin.template:
+        src: homelab.yml.j2
+        dest: '{{ glance_install_folder }}/homelab.yml'
+        owner: root
+        group: root
+        mode: '0775'
 
     - name: Restart Glance
       ansible.builtin.service:
