@@ -1,0 +1,17 @@
+services:
+  freshrss:
+    image: freshrss/freshrss:latest
+    container_name: freshrss
+    hostname: freshrss
+    restart: unless-stopped
+    ports:
+      - 8070:80
+    environment:
+      TZ: Europe/Berlin
+      # Refresh feeds twice per hour
+      CRON_MIN: '3,33'
+      # Caddy runs in the LAN, allow it to pass X-Forwarded-* headers
+      TRUSTED_PROXY: 172.16.0.1/12 192.168.0.1/16
+    volumes:
+      - '{{ docker_container_data_folder }}/freshrss/data:/var/www/FreshRSS/data'
+      - '{{ docker_container_data_folder }}/freshrss/extensions:/var/www/FreshRSS/extensions'

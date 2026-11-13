@@ -28,6 +28,14 @@ proxy:
       title: Bazarr
       icon: 'di:bazarr'
 
+  - name: freshrss
+    hostname: 'rss.berger-em.net'
+    proxy_host: 'http://{{ host_ip }}:8070'
+    dashboard:
+      group: Applications
+      title: FreshRSS
+      icon: 'di:freshrss'
+
   - name: gluten
     hostname: 'gluten.berger-em.net'
     proxy_host: 'http://{{ host_ip }}:8000'
@@ -120,3 +128,4 @@ docker_roles:
   - name: arr_stack
   - name: minecraft
   - name: komodo
+  - name: freshrss
